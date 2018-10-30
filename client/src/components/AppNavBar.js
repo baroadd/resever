@@ -22,24 +22,24 @@ class AppNavBar extends Component {
     }
 
     render() {
-        return(
+        return (
             <div>
-            <Navbar color="dark" dark expand="sm" className="mb-5">
-                <Container>
-                    <NavbarBrand href="/">Reserver</NavbarBrand>
-                    <NavbarToggler onClick={this.toggle}/>
-                    <Collapse isOpen={this.state.isOpen} navbar>
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink href="https://www.facebook.com">facebook</NavLink>
-                            </NavItem>
-                        </Nav>
-                    </Collapse>
-                </Container>
-            </Navbar>
-        </div>
+                <Navbar color="dark" dark expand="sm" className="mb-5">
+                    <Container>
+                        <NavbarBrand href="/">Reserver</NavbarBrand>
+                        <NavbarToggler onClick={this.toggle} />
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                            <Nav className="ml-auto" navbar>
+                                <NavItem>
+                                    <NavLink href="https://www.facebook.com">facebook</NavLink>
+                                </NavItem>
+                            </Nav>
+                        </Collapse>
+                    </Container>
+                </Navbar>
+            </div>
         );
-        
+
     }
 }
 
