@@ -5,8 +5,14 @@ import {
     CardText,
     Col,
     CardTitle,
-    UncontrolledCollapse ,
-    CardDeck
+    UncontrolledCollapse,
+    CardDeck,
+    ListGroup,
+    ListGroupItem,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
 } from 'reactstrap';
 const items = [
     {
@@ -42,7 +48,9 @@ const items = [
 ]
 class AppCardsInCard extends Component {
     state = {
-        isOpen: false
+        isOpen: false,
+        nestedModal: false,
+        closeAll: false
     }
 
     collapse = () => {
@@ -51,38 +59,71 @@ class AppCardsInCard extends Component {
         });
     }
 
+    toggleNested() {
+        this.setState({
+            nestedModal: !this.state.nestedModal,
+            closeAll: true
+        });
+    }
+
     render() {
         const cleaning = (item) => {
-            if(item.cleaning!==''){
-                return <div>ความสะอาดของห้อง: {item.cleaning}</div>
+            if (item !== '') {
+                return <div>ความสะอาดของห้อง: {item}</div>
             }
             return null;
         }
-        const payment = (item) =>{
-            if(item.payment!==''){
-                if(item.payment==='ยังไม่ได้จ่ายค่าเช่า'){
-                   return <div>การจ่ายเงิน: {item.payment}</div>; 
+        const payment = (item) => {
+            if (item !== '') {
+                if (item === 'ยังไม่ได้จ่ายค่าเช่า') {
+                    return <div>การจ่ายเงิน: {item}</div>;
                 }
-                return <div>การจ่ายเงิน: {item.payment}</div>;
+                return <div>การจ่ายเงิน: {item}</div>;
             }
             return null;
         }
-        const color = (item) =>{
-            if(item.status==='Avaliable'&&item.cleaning==='ยังไม่ได้ทำความสะอาด'){
+        const color = (item) => {
+            if (item.status === 'Avaliable' && item.cleaning === 'ยังไม่ได้ทำความสะอาด') {
                 return 'warning';
-            }else if(item.status==='Busy'){
+            } else if (item.status === 'Busy') {
                 return 'danger';
-            }else if(item.status==='Avaliable'){
+            } else if (item.status === 'Avaliable') {
                 return 'success';
             }
         }
-        const statusLabel = (item) =>{
-            if(color(item) === 'success'){
+        const colorListPayment = (item) => {
+            if (item === 'ยังไม่ได้จ่ายค่าเช่า') {
+                return 'warning';
+            }
+            return 'success';
+
+        }
+        const colorListCleaning = (item) => {
+            if (item === 'ยังไม่ได้ทำความสะอาด') {
+                return 'warning';
+            }
+            return 'success';
+        }
+        const statusLabel = (item) => {
+            if (color(item) === 'success') {
                 return 'ว่าง';
-            }else if(color(item) === 'danger'){
+            } else if (color(item) === 'danger') {
                 return 'ไม่ว่าง';
-            }else if(color(item) === 'warning'){
+            } else if (color(item) === 'warning') {
                 return 'ว่าง แต่ยังไม่ได้ทำความสะอาด';
+            }
+        }
+
+        const listGroup = (item, mode) => {
+            if (item) {
+                if (mode === 'payment') {
+                    return <ListGroupItem color={colorListPayment(item)}>{payment(item)}</ListGroupItem>;
+                } else if (mode === 'cleaning') {
+                    return <ListGroupItem color={colorListCleaning(item)}>{cleaning(item)}</ListGroupItem>;
+                }
+
+                return null;
+
             }
         }
         const cards = items.map((item) => {
@@ -95,12 +136,22 @@ class AppCardsInCard extends Component {
                         <CardText>สถานะ: {statusLabel(item)}</CardText>
                     </Card>
                     <UncontrolledCollapse toggler={item.name}>
-                        <Card body className="text-center">
+                        <Card body className="text-center" >
                             <CardText>
-                                {payment(item)}
-                                {cleaning(item)}
+                                <ListGroup>
+                                    {listGroup(item.payment, 'payment')}
+                                    {listGroup(item.cleaning, 'cleaning')}
+                                </ListGroup>
                             </CardText>
-                            <Button>แก้ไข</Button>
+                            <Button onClick={this.toggleNested}>แก้ไข</Button>
+                            <Modal isOpen={this.state.nestedModal} toggle={this.toggleNested} onClosed={this.state.closeAll ? this.toggle : undefined}>
+                                <ModalHeader>แก้ไข</ModalHeader>
+                                <ModalBody>ABCD</ModalBody>
+                                <ModalFooter>
+                                    <Button>ตกลง</Button>
+                                    <Button>ยกเลิก</Button>
+                                </ModalFooter>
+                            </Modal>
                         </Card>
                     </UncontrolledCollapse >
                 </Col>
@@ -111,7 +162,7 @@ class AppCardsInCard extends Component {
             <CardDeck>
                 {cards}
             </CardDeck>
-                
+
         );
     }
 }
